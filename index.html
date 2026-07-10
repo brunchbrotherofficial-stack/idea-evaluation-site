@@ -115,7 +115,7 @@
         <div class="card-body">
           <div class="month-row">
             <label for="evaluationMonth">평가 월</label>
-            <input id="evaluationMonth" type="month" />
+            <select id="evaluationMonth"></select>
           </div>
         </div>
       </div>
@@ -193,6 +193,39 @@
     function getCurrentMonth() {
       const now = new Date();
       return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    }
+
+    function getEvaluationMonthOptions() {
+      return [
+        "2026-05",
+        "2026-06",
+        "2026-07",
+        "2026-08",
+        "2026-09",
+        "2026-10",
+        "2026-11",
+        "2026-12",
+        "2027-01",
+        "2027-02",
+        "2027-03",
+        "2027-04"
+      ];
+    }
+
+    function renderEvaluationMonthOptions() {
+      const select = document.getElementById("evaluationMonth");
+      const currentMonth = getCurrentMonth();
+      const months = getEvaluationMonthOptions();
+
+      if (!months.includes(currentMonth)) {
+        months.unshift(currentMonth);
+      }
+
+      select.innerHTML = months
+        .map(month => `<option value="${month}">${month}</option>`)
+        .join("");
+
+      select.value = months.includes(currentMonth) ? currentMonth : months[0];
     }
 
     const SUBMITTED_STORAGE_KEY = "submittedBulkEvaluationMonths";
@@ -539,7 +572,7 @@
       if (!evaluate) loadCloudRecords();
     }
 
-    document.getElementById("evaluationMonth").value = getCurrentMonth();
+    renderEvaluationMonthOptions();
     document.getElementById("evaluationMonth").addEventListener("change", updateSubmitState);
     document.getElementById("resultMonth").addEventListener("change", renderResults);
     document.getElementById("submitBtn").addEventListener("click", submitAll);
